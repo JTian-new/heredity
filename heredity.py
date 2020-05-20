@@ -172,22 +172,29 @@ def joint_probability(people, one_gene, two_genes, have_trait):
         child_trait = gene_trait_dict['trait'][person]
         
         if mother is None:
+            # P(Genes)
             prob_gene = PROBS['gene'][child_num_genes]
             
         else:
+            # P(Gene | # of Gene in Mother, # of Gene in Father)
             mother_num_genes = gene_trait_dict['gene'][mother]
             father_num_genes = gene_trait_dict['gene'][father]
             
             if child_num_genes == 0:
+                # P(Not from Mother | # of Gene in Mother)*P(Not from Father | # of Gene in Father)
                 prob_gene = (1-gene_cond_prob[mother_num_genes])*(1-gene_cond_prob[father_num_genes])
             
             elif child_num_genes == 2:
+                # P(1 Gene from Mother | # of Gene in Mother)*P(1 Gene from Father | # of Gene in Father)
                 prob_gene = gene_cond_prob[mother_num_genes]*gene_cond_prob[father_num_genes]
         
             else:
+                # P(1 Gene from Mother | # of Gene in Mother)*P(Not from Father | # of Gene in Father) +
+                # P(Not from Mother | # of Gene in Mother)*P(1 Gene from Father | # of Gene in Father)
                 prob_gene = gene_cond_prob[mother_num_genes]*(1-gene_cond_prob[father_num_genes]) +\
                 (1-gene_cond_prob[mother_num_genes])*gene_cond_prob[father_num_genes]
 
+        # P(Trait | # of Genes)
         prob_trait = PROBS['trait'][child_num_genes][child_trait]
         
         joint_prob = joint_prob*prob_trait*prob_gene
